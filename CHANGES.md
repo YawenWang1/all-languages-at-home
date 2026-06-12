@@ -18,6 +18,13 @@ All problems were data-related (not in the rendering logic in `renderResult`).
 
 ## Change Log
 
+### 2026-06-10 — Git fork maintenance: Merged upstream/main
+- **Command:** `git checkout main && git merge upstream/main --allow-unrelated-histories --strategy=ours`
+- **Upstream commits integrated:** af2eb62 (Update css), 4e50a72 (Add pronunciation guides), a54ee38 (Add more words), 7f940f3 (Hides speaking and typing a word), c55fb8a (Add prototype).
+- **Resolution:** Used `--strategy=ours` to preserve the complete Japanese romaji explicit-field migration + all pronunciation quality enforcement, overrides, sanitizers, and two-row strictness work across static words + 7 emoji categories. The prototype/hiding logic (isLocalPrototype guard that disables Whisper voice input and updates labels/messages on public deployments) was already present in the local branch.
+- **Result:** Merge commit f36fb0a records the integration in history. No file changes in this merge (our data + code took precedence). Pushed to origin/main (triggers Vercel redeploy).
+- **Note:** Upstream data arrays for most emoji categories remain in the pre-romaji-migration shape (6/7 fields, Japanese reading often last). Our processing continues to prioritize the explicit romaji 7th/8th fields we added.
+
 ### 2026-04-12 15:22 UTC — Documentation & Audit Header
 - **File:** `app.js`
 - **Change:** Added a large, permanent "Quality Audit" header comment block immediately after the `languages` array (before `const words`).
