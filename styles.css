@@ -225,8 +225,6 @@ h1 {
 }
 
 .language-box,
-.text-input-section,
-.voice-input-section,
 .visual-input-section {
   display: grid;
   gap: 14px;
@@ -321,116 +319,11 @@ h1 {
   font-weight: 800;
 }
 
-.voice-card {
-  display: grid;
-  grid-template-columns: 72px 1fr auto;
-  align-items: center;
-  gap: 16px;
-  margin-top: auto;
-  padding: 16px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: #fff;
-}
-
-.voice-orb {
-  display: grid;
-  place-items: center;
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  background: #eaf7f1;
-}
-
-.voice-orb span {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  background: var(--green);
-}
-
-.voice-orb.is-listening {
-  animation: pulse 1.15s ease-in-out infinite;
-}
-
-.listen-label {
-  margin-bottom: 4px;
-  font-weight: 700;
-}
-
-#heard-text {
-  margin-bottom: 0;
-  color: var(--muted);
-  line-height: 1.4;
-}
-
-.primary-button,
-.secondary-button,
 .quick-tries button,
 .sound-button {
   border: 0;
   border-radius: 8px;
   cursor: pointer;
-}
-
-.primary-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 9px;
-  min-width: 118px;
-  min-height: 48px;
-  padding: 0 18px;
-  color: white;
-  font-weight: 800;
-  background: var(--coral);
-}
-
-.secondary-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 9px;
-  min-width: 118px;
-  min-height: 48px;
-  padding: 0 18px;
-  color: white;
-  font-weight: 800;
-  font-size: inherit;
-  background: var(--coral);
-}
-
-.text-input-card {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 14px;
-  padding: 16px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: #fff;
-}
-
-.text-input-card input {
-  width: 100%;
-  min-width: 0;
-  min-height: 58px;
-  padding: 0 18px;
-  border: 2px solid #cfe2dc;
-  border-radius: 8px;
-  color: var(--ink);
-  font: inherit;
-  font-size: 1.16rem;
-  background: #f9fcfb;
-}
-
-.text-input-card input:focus {
-  border-color: rgba(47, 157, 116, 0.8);
-  outline: 3px solid rgba(47, 157, 116, 0.16);
-}
-
-.button-icon {
-  font-size: 0.8rem;
 }
 
 .quick-tries {
@@ -592,24 +485,6 @@ h1 {
   margin: 2px 0 3px;
   font-size: clamp(1.7rem, 3vw, 2.8rem);
   line-height: 1;
-}
-
-#detected-line {
-  margin-bottom: 0;
-  color: var(--muted);
-  line-height: 1.25;
-}
-
-.confidence-pill {
-  display: grid;
-  place-items: center;
-  width: 50px;
-  height: 50px;
-  flex: 0 0 50px;
-  border: 2px solid #c9efe0;
-  border-radius: 50%;
-  color: var(--green);
-  font-weight: 800;
 }
 
 .result-actions {
@@ -824,16 +699,6 @@ h1 {
   font-weight: 700;
 }
 
-@keyframes pulse {
-  0%,
-  100% {
-    box-shadow: 0 0 0 0 rgba(47, 157, 116, 0.28);
-  }
-  50% {
-    box-shadow: 0 0 0 16px rgba(47, 157, 116, 0);
-  }
-}
-
 @keyframes float {
   0%,
   100% {
@@ -860,28 +725,6 @@ h1 {
 }
 
 @media (max-width: 560px) {
-  .voice-card {
-    grid-template-columns: 58px 1fr;
-  }
-
-  .voice-orb {
-    width: 58px;
-    height: 58px;
-  }
-
-  .primary-button {
-    grid-column: 1 / -1;
-    width: 100%;
-  }
-
-  .text-input-card {
-    grid-template-columns: 1fr;
-  }
-
-  .secondary-button {
-    width: 100%;
-  }
-
   .result-topline {
     align-items: flex-start;
   }

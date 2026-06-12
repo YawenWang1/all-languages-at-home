@@ -33,8 +33,8 @@
         </div>
 
         <p class="intro-copy">
-          Pick a word from one family language and discover how it looks,
-          sounds, and feels in the others.
+          Select all family languages, pick a word from one and discover how it
+          looks, sounds, and feels in the others.
         </p>
 
         <div class="language-box" aria-labelledby="language-heading">
@@ -43,35 +43,6 @@
             <span id="language-count">4 selected</span>
           </div>
           <div class="language-grid" id="language-grid"></div>
-        </div>
-
-        <div class="voice-input-section is-hidden" aria-labelledby="voice-input-heading">
-          <div class="section-heading">
-            <h2 id="voice-input-heading">Speak a word</h2>
-          </div>
-          <div class="voice-card">
-            <div class="voice-orb" id="voice-orb" aria-hidden="true">
-              <span></span>
-            </div>
-            <div class="voice-copy">
-              <p class="listen-label" id="listen-label">Ready to listen</p>
-              <p id="heard-text">Try any of the visual words below.</p>
-            </div>
-            <button class="primary-button" id="listen-button" type="button">
-              <span class="button-icon" aria-hidden="true">●</span>
-              Listen
-            </button>
-          </div>
-        </div>
-
-        <div class="text-input-section is-hidden" aria-labelledby="text-input-heading">
-          <div class="section-heading">
-            <h2 id="text-input-heading">Type a word</h2>
-          </div>
-          <form class="text-input-card" id="text-input-form" action="#">
-            <input id="text-word-input" type="text" autocomplete="off" placeholder="Type a word" aria-label="Type a word" />
-            <button class="secondary-button" id="text-submit-button" type="button">Find</button>
-          </form>
         </div>
 
         <div class="visual-input-section" aria-labelledby="visual-input-heading">
@@ -93,18 +64,16 @@
             <span>б</span>
             <span>字</span>
           </div>
-          <p id="loading-text">Listening for the family word...</p>
+          <p id="loading-text">Finding the word in your family languages...</p>
         </div>
 
         <article class="result-view is-hidden" id="result-view">
           <div class="result-topline">
             <div>
-              <p class="eyebrow">Detected word</p>
+              <p class="eyebrow">Your word</p>
               <h2 id="result-title">Apple</h2>
-              <p id="detected-line">Recognized from English</p>
             </div>
             <div class="result-actions">
-              <div class="confidence-pill" id="confidence-pill">98%</div>
               <button class="icon-button" id="expand-result-button" type="button" aria-label="Expand result" aria-pressed="false">⤢</button>
               <button class="icon-button" id="close-result-button" type="button" aria-label="Close result">×</button>
             </div>

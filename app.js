@@ -1137,29 +1137,12 @@ const words = {
 
 const selectedLanguages = new Set(["en", "nl", "ru", "zh", "ja"]);
 const expandedVisualCategories = new Set(["emoji-animals"]);
-const recognitionApi = window.SpeechRecognition || window.webkitSpeechRecognition;
-const whisperEndpoint = "http://localhost:8787/transcribe";
-const isLocalPrototype = ["", "localhost", "127.0.0.1"].includes(window.location.hostname);
-const languageNames = {
-  en: "English",
-  nl: "Nederlands",
-  ru: "русский",
-  zh: "中文",
-  ja: "日本語",
-};
 let availableVoices = [];
 let currentResult = null;
 
 const els = {
   languageGrid: document.querySelector("#language-grid"),
   languageCount: document.querySelector("#language-count"),
-  textInputForm: document.querySelector("#text-input-form"),
-  textWordInput: document.querySelector("#text-word-input"),
-  textSubmitButton: document.querySelector("#text-submit-button"),
-  listenButton: document.querySelector("#listen-button"),
-  listenLabel: document.querySelector("#listen-label"),
-  heardText: document.querySelector("#heard-text"),
-  voiceOrb: document.querySelector("#voice-orb"),
   resultOverlay: document.querySelector("#result-overlay"),
   resultView: document.querySelector("#result-view"),
   closeResultButton: document.querySelector("#close-result-button"),
@@ -1167,8 +1150,6 @@ const els = {
   loadingScene: document.querySelector("#loading-scene"),
   loadingText: document.querySelector("#loading-text"),
   resultTitle: document.querySelector("#result-title"),
-  detectedLine: document.querySelector("#detected-line"),
-  confidencePill: document.querySelector("#confidence-pill"),
   wordArt: document.querySelector("#word-art"),
   factsList: document.querySelector("#facts-list"),
   translationList: document.querySelector("#translation-list"),
@@ -1235,24 +1216,6 @@ function renderQuickWords() {
       `;
     })
     .join("");
-}
-
-function normalizeWord(value) {
-  return value.toLowerCase().trim().replace(/[.,!?]/g, "");
-}
-
-function findWord(input) {
-  const normalized = normalizeWord(input);
-  const activeWords = getActiveDictionaryEntries();
-  const matches = activeWords
-    .flatMap((entry) => entry.aliases.map((alias) => ({ entry, alias: normalizeWord(alias) })))
-    .filter(({ alias }) => alias && normalized.includes(alias))
-    .sort((first, second) => second.alias.length - first.alias.length);
-  return matches[0]?.entry || words.apple;
-}
-
-function getActiveDictionaryEntries() {
-  return emojiCategories.flatMap((category) => category.words.map((key) => words[key]));
 }
 
 function showLoading(message) {
@@ -1343,13 +1306,11 @@ function loadVoices() {
   availableVoices = window.speechSynthesis.getVoices();
 }
 
-function renderResult(entry, heard = entry.detected.word, sourceLanguage = entry.detected.language) {
-  currentResult = { entry, heard, sourceLanguage };
+function renderResult(entry) {
+  currentResult = { entry };
   els.resultOverlay.classList.remove("is-hidden");
   els.resultView.classList.remove("is-hidden");
   els.resultTitle.textContent = capitalize(entry.translations.en.word);
-  els.detectedLine.textContent = `Recognized “${heard}” from ${sourceLanguage}`;
-  els.confidencePill.textContent = `${94 + Math.floor(Math.random() * 5)}%`;
   els.wordArt.setAttribute("aria-label", `Illustration of ${entry.translations.en.word}`);
   els.wordArt.innerHTML = symbolArt(entry.art);
 
@@ -1379,207 +1340,14 @@ function renderResult(entry, heard = entry.detected.word, sourceLanguage = entry
     .join("");
 }
 
-function handleWord(input, sourceLanguage) {
-  const entry = findWord(input);
-  els.heardText.textContent = `Looking up “${input}” across your family languages...`;
-  showLoading("Mixing sounds, scripts, and a tiny picture...");
-  window.setTimeout(() => {
-    hideLoading();
-    renderResult(entry, input, sourceLanguage || entry.detected.language);
-  }, 1150);
-}
-
-function handleTextWord(input) {
-  const entry = findWord(input);
-  els.heardText.textContent = `Looking up “${input}” across your family languages...`;
-  showLoading("Reading the word across your family languages...");
-  window.setTimeout(() => {
-    hideLoading();
-    renderResult(entry, input, "text input");
-  }, 650);
-}
-
 function handleVisualWord(key) {
   const entry = words[key];
   if (!entry) return;
-  const label = entry.translations.en.word;
-  els.heardText.textContent = `Looking up “${label}” across your family languages...`;
-  showLoading("Reading the picture across your family languages...");
+  showLoading("Finding the word in your family languages...");
   window.setTimeout(() => {
     hideLoading();
-    renderResult(entry, label, "visual input");
+    renderResult(entry);
   }, 650);
-}
-
-async function listen() {
-  if (!isLocalPrototype) {
-    els.listenLabel.textContent = "Voice is local only";
-    els.heardText.textContent = "The shared web version can use typing and emoji picking. Whisper voice input runs only on the local prototype.";
-    return;
-  }
-
-  if (navigator.mediaDevices?.getUserMedia && window.MediaRecorder) {
-    await listenWithWhisper();
-    return;
-  }
-  listenWithBrowserRecognition();
-}
-
-async function listenWithWhisper() {
-  let stream;
-  try {
-    els.listenLabel.textContent = "Listening...";
-    els.heardText.textContent = "Speak one word now.";
-    els.voiceOrb.classList.add("is-listening");
-    showLoading("Recording a short word for Whisper...");
-    els.listenButton.disabled = true;
-
-    stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    const audioBlob = await recordWav(stream, 2600);
-
-    showLoading("Whisper is listening across your family languages...");
-    const result = await transcribeWithWhisper(audioBlob);
-    const transcript = result.text?.trim();
-
-    if (!transcript) {
-      els.listenLabel.textContent = "Try again";
-      els.heardText.textContent = "Whisper did not catch a word. Try a little closer to the microphone.";
-      hideLoading();
-      closeResult();
-      return;
-    }
-
-    const sourceLanguage = languageNames[result.language] || result.language || "Whisper";
-    els.listenLabel.textContent = "Word found";
-    handleWord(transcript, sourceLanguage);
-  } catch (error) {
-    console.warn(error);
-    els.listenLabel.textContent = "Whisper not ready";
-    els.heardText.textContent = `Could not reach local Whisper. Start the backend, then open http://localhost:4173. (${error.message})`;
-    hideLoading();
-    closeResult();
-  } finally {
-    els.voiceOrb.classList.remove("is-listening");
-    els.listenButton.disabled = false;
-    stream?.getTracks().forEach((track) => track.stop());
-  }
-}
-
-async function transcribeWithWhisper(audioBlob) {
-  const formData = new FormData();
-  formData.append("audio", audioBlob, "word.wav");
-
-  const response = await fetch(whisperEndpoint, {
-    method: "POST",
-    body: formData,
-  });
-
-  const payload = await response.json().catch(() => ({}));
-  if (!response.ok) {
-    throw new Error(payload.error || "Whisper transcription failed.");
-  }
-  return payload;
-}
-
-function listenWithBrowserRecognition() {
-  if (!recognitionApi) {
-    handleWord("apple");
-    return;
-  }
-
-  const recognition = new recognitionApi();
-  recognition.lang = "en-US";
-  recognition.interimResults = false;
-  recognition.maxAlternatives = 1;
-  els.listenLabel.textContent = "Listening...";
-  els.voiceOrb.classList.add("is-listening");
-  showLoading("Listening for the family word...");
-
-  recognition.onresult = (event) => {
-    const transcript = event.results[0][0].transcript;
-    els.listenLabel.textContent = "Word found";
-    els.voiceOrb.classList.remove("is-listening");
-    handleWord(transcript);
-  };
-
-  recognition.onerror = () => {
-    els.listenLabel.textContent = "Tap a word to try";
-    els.voiceOrb.classList.remove("is-listening");
-    hideLoading();
-    closeResult();
-    els.heardText.textContent = "Voice recognition is resting here. Try one of the word buttons.";
-  };
-
-  recognition.onend = () => {
-    els.voiceOrb.classList.remove("is-listening");
-  };
-
-  recognition.start();
-}
-
-async function recordWav(stream, durationMs) {
-  const audioContext = new AudioContext();
-  const source = audioContext.createMediaStreamSource(stream);
-  const processor = audioContext.createScriptProcessor(4096, 1, 1);
-  const chunks = [];
-
-  processor.onaudioprocess = (event) => {
-    chunks.push(new Float32Array(event.inputBuffer.getChannelData(0)));
-  };
-
-  source.connect(processor);
-  processor.connect(audioContext.destination);
-  await wait(durationMs);
-  processor.disconnect();
-  source.disconnect();
-  await audioContext.close();
-
-  return encodeWav(chunks, audioContext.sampleRate);
-}
-
-function encodeWav(chunks, sampleRate) {
-  const length = chunks.reduce((total, chunk) => total + chunk.length, 0);
-  const samples = new Float32Array(length);
-  let offset = 0;
-  chunks.forEach((chunk) => {
-    samples.set(chunk, offset);
-    offset += chunk.length;
-  });
-
-  const buffer = new ArrayBuffer(44 + samples.length * 2);
-  const view = new DataView(buffer);
-  writeString(view, 0, "RIFF");
-  view.setUint32(4, 36 + samples.length * 2, true);
-  writeString(view, 8, "WAVE");
-  writeString(view, 12, "fmt ");
-  view.setUint32(16, 16, true);
-  view.setUint16(20, 1, true);
-  view.setUint16(22, 1, true);
-  view.setUint32(24, sampleRate, true);
-  view.setUint32(28, sampleRate * 2, true);
-  view.setUint16(32, 2, true);
-  view.setUint16(34, 16, true);
-  writeString(view, 36, "data");
-  view.setUint32(40, samples.length * 2, true);
-
-  let byteOffset = 44;
-  for (const sample of samples) {
-    const clamped = Math.max(-1, Math.min(1, sample));
-    view.setInt16(byteOffset, clamped < 0 ? clamped * 0x8000 : clamped * 0x7fff, true);
-    byteOffset += 2;
-  }
-
-  return new Blob([view], { type: "audio/wav" });
-}
-
-function writeString(view, offset, string) {
-  for (let index = 0; index < string.length; index += 1) {
-    view.setUint8(offset + index, string.charCodeAt(index));
-  }
-}
-
-function wait(milliseconds) {
-  return new Promise((resolve) => window.setTimeout(resolve, milliseconds));
 }
 
 function capitalize(value) {
@@ -11160,29 +10928,7 @@ els.languageGrid.addEventListener("click", (event) => {
   }
   renderLanguages();
   if (currentResult && !els.resultOverlay.classList.contains("is-hidden")) {
-    renderResult(currentResult.entry, currentResult.heard, currentResult.sourceLanguage);
-  }
-});
-
-els.listenButton?.addEventListener("click", listen);
-
-function submitTextInput() {
-  const word = els.textWordInput.value.trim();
-  if (!word) return;
-  handleTextWord(word);
-}
-
-els.textInputForm.addEventListener("submit", (event) => {
-  event.preventDefault();
-  submitTextInput();
-});
-
-els.textSubmitButton.addEventListener("click", submitTextInput);
-
-els.textWordInput.addEventListener("keydown", (event) => {
-  if (event.key === "Enter") {
-    event.preventDefault();
-    submitTextInput();
+    renderResult(currentResult.entry);
   }
 });
 
@@ -11225,10 +10971,6 @@ els.translationList.addEventListener("click", (event) => {
 renderLanguages();
 renderQuickWords();
 loadVoices();
-if (!isLocalPrototype) {
-  if (els.listenLabel) els.listenLabel.textContent = "Voice is local only";
-  if (els.heardText) els.heardText.textContent = "Try typing a word or picking an emoji in the shared web version.";
-}
 if (window.speechSynthesis) {
   window.speechSynthesis.addEventListener("voiceschanged", loadVoices);
 }
