@@ -10038,8 +10038,13 @@ const chinesePronunciationMap = {"一":"yī","丁":"dīng","七":"qī","三":"s�
    "In your languages" two-row rule for all Latin-script languages.
    Expanded from ~25 entries to 100+ curated kid-friendly respellings.
    Legacy safety net for "high voltage" kept temporarily. */
+function isLatinPhoneticDuplicate(word, phonetic) {
+  const w = String(word).toLowerCase().replace(/[^a-z0-9]/g, "");
+  const p = String(phonetic).toLowerCase().replace(/[^a-z0-9]/g, "");
+  return w.length > 0 && w === p;
+}
+
 const latinPronunciationOverrides = {
-  // English (helpful respellings for kids)
   penguin: "PEN-gwin",
   giraffe: "juh-RAF",
   kangaroo: "kang-guh-ROO",
@@ -10053,11 +10058,11 @@ const latinPronunciationOverrides = {
   dinosaur: "DYE-nuh-sor",
   unicorn: "YOO-ni-korn",
   bicycle: "BY-si-kul",
-  airplane: "AIR-plane",
+  airplane: "AIR-playn",
   umbrella: "um-BREL-uh",
   computer: "kum-PYOO-ter",
-  camera: "KAM-er-uh",
-  sandwich: "SAND-wich",
+  camera: "KAM-ruh",
+  sandwich: "SAN-wij",
   chocolate: "CHOK-lut",
   strawberry: "STRAW-bair-ee",
   watermelon: "WAW-ter-mel-un",
@@ -10065,7 +10070,7 @@ const latinPronunciationOverrides = {
   broccoli: "BROK-uh-lee",
   spaghetti: "spuh-GET-ee",
   birthday: "BURTH-day",
-  playground: "PLAY-ground",
+  playground: "PLAY-grownd",
   mountain: "MOWN-tin",
   apple: "A-puhl",
   banana: "buh-NA-nuh",
@@ -10085,7 +10090,7 @@ const latinPronunciationOverrides = {
   sun: "suhn",
   star: "stahr",
   tree: "treh",
-  hand: "hahnd",
+  hand: "hant",
   eye: "igh",
   shoe: "shoo",
   hat: "haht",
@@ -10093,7 +10098,7 @@ const latinPronunciationOverrides = {
   car: "kar",
   train: "trayn",
   house: "hows",
-  bed: "bedd",
+  bed: "bet",
   chair: "chayr",
   door: "dor",
   window: "WIN-doh",
@@ -10132,7 +10137,6 @@ const latinPronunciationOverrides = {
   park: "pahrk",
   soap: "sohp",
   quiet: "KWY-et",
-  // Dutch (approximate kid-friendly guides, never raw word)
   hond: "hont",
   kat: "kaht",
   vogel: "VO-gul",
@@ -10152,10 +10156,9 @@ const latinPronunciationOverrides = {
   beer: "bayr",
   regen: "RAY-gun",
   sneeuw: "snayw",
-  wolk: "wolk",
+  wolk: "vohlk",
   zee: "zay",
   berg: "berkh",
-  hand: "hant",
   oog: "ohkh",
   schoen: "skhoon",
   hoed: "hoot",
@@ -10163,14 +10166,13 @@ const latinPronunciationOverrides = {
   auto: "OW-toh",
   trein: "trine",
   huis: "house",
-  bed: "bet",
   stoel: "stool",
   bord: "bort",
   deur: "dur",
   raam: "rahm",
   pop: "pohp",
   koe: "koo",
-  vlinder: "VLIN-der",
+  vlinder: "FLIN-der",
   vuur: "fuur",
   taart: "tahrt",
   sap: "sahp",
@@ -10188,113 +10190,113 @@ const latinPronunciationOverrides = {
   kikker: "KIK-er",
   koekje: "KOOK-yuh",
   boot: "boht",
-  raket: "ra-KET",
+  raket: "rah-KET",
   kasteel: "ka-STAYL",
   dansen: "DAN-sun",
   voetbal: "FOOT-bal",
-  camera: "KA-muh-ra",
   schaap: "skharp",
   ijs: "eys",
   stil: "stihl",
   zeep: "zayp",
   sjaal: "shahl",
-  park: "pahrk",
-  // Common activity / nature words that appear in dynamic data
-  "high voltage": "HIGH VOL-tij", // legacy safety net
+  "high voltage": "HIGH VOL-tij",
   lightning: "LYT-ning",
   "christmas tree": "KRIS-muhs tree",
   fireworks: "FYUR-wurks",
   "globe showing europe-africa": "GLOHB yu-rohp AF-ri-ka",
   "globe showing americas": "GLOHB uh-MER-i-kas",
-
-  // Expanded readable phonetics for English & Dutch (7 categories audit)
-  "mountain": "MOWN-tin",
   "snow-capped mountain": "SNOH-kapt MOWN-tin",
-  "compass": "KUM-pus",
+  compass: "KUM-pus",
   "world map": "WURLD map",
   "map of japan": "MAP of juh-PAN",
-  "fireworks": "FYUR-wurks",
-  "firecracker": "FYUR-krak-er",
-  "drum": "drum",
-  "long drum": "LONG drum",
-  "maracas": "muh-RAH-kuz",
-  "flute": "floot",
-  "harp": "harp",
-  "glasses": "GLAS-iz",
-  "sunglasses": "SUN-glas-iz",
-  "goggles": "GOG-ulz",
-  "biceps": "BY-seps",
+  firecracker: "FYUR-krak-er",
+  drum: "druhm",
+  "long drum": "LONG druhm",
+  maracas: "muh-RAH-kuz",
+  flute: "floot",
+  harp: "hahrp",
+  glasses: "GLAS-iz",
+  sunglasses: "SUN-glas-iz",
+  goggles: "GOG-ulz",
+  biceps: "BY-seps",
   "mechanical arm": "muh-KAN-ih-kul arm",
   "mechanical leg": "muh-KAN-ih-kul leg",
-  "ear": "eer",
-  "foot": "foot",
-  "leg": "leg",
-  "snowflake": "SNOH-flayk",
-  "thermometer": "ther-MOM-uh-ter",
-  "planet": "PLAN-it",
+  ear: "eer",
+  foot: "fut",
+  leg: "legg",
+  snowflake: "SNOH-flayk",
+  thermometer: "ther-MOM-uh-ter",
+  planet: "PLAN-it",
   "milky way": "MIL-kee way",
-  "tornado": "tor-NAY-doh",
-  "fog": "fog",
-  "cyclone": "SY-klohn",
-  "rainbow": "RAYN-boh",
-  "umbrella": "um-BREL-uh",
-  "fire": "fyr",
-  "droplet": "DROP-lit",
-  "wave": "wayv",
+  tornado: "tor-NAY-doh",
+  fog: "fawg",
+  cyclone: "SY-klohn",
+  rainbow: "RAYN-boh",
+  droplet: "DROP-lit",
+  wave: "wayv",
   "bento box": "BEN-toh box",
-  "dumpling": "DUM-pling",
-  "sushi": "SOO-shee",
-  "ramen": "RAH-men",
+  dumpling: "DUHM-pling",
+  sushi: "SOO-shee",
+  ramen: "RAH-men",
   "curry rice": "KUR-ee rys",
   "moon cake": "MOON kayk",
   "fortune cookie": "FOR-chun KOO-kee",
   "takeout box": "TAYK-out box",
-
-  // Additional English/Dutch readable phonetics (second pass)
-  "backpack": "BAK-pak",
-  "handbag": "HAND-bag",
-  "purse": "purs",
+  backpack: "BAK-pak",
+  handbag: "HAN-bahg",
+  purse: "purs",
   "t-shirt": "TEE-shurt",
-  "jeans": "jeenz",
-  "dress": "dres",
-  "kimono": "ki-MOH-noh",
-  "sari": "SAH-ree",
-  "bikini": "bi-KEE-nee",
-  "shorts": "shohrts",
-  "scarf": "skarf",
-  "gloves": "gluvz",
-  "necktie": "NEK-ty",
+  jeans: "jeenz",
+  dress: "dres",
+  kimono: "ki-MOH-noh",
+  sari: "SAH-ree",
+  bikini: "bi-KEE-nee",
+  shorts: "shohrts",
+  gloves: "gluvz",
+  necktie: "NEK-ty",
   "lab coat": "LAB koht",
   "safety vest": "SAYF-tee vest",
-  "swimsuit": "SWIM-soot",
-  "underwear": "UN-der-wair",
-  "socks": "soks",
-  "shoes": "shooz",
-  "hat": "hat",
-  "glasses": "GLAS-iz",
-  "sunglasses": "SUN-glas-iz",
-  "watch": "wotch",
-  "ring": "ring",
-  "necklace": "NEK-lis",
-  "earrings": "EER-ringz",
-  "bracelet": "BRAY-slet",
-  "camera": "KAM-ruh",
-  "phone": "fohn",
-  "laptop": "LAP-top",
-  "television": "TEL-uh-vizh-un",
-  "radio": "RAY-dee-oh",
-  "book": "book",
-  "newspaper": "NOOZ-pay-per",
-  "map": "map",
-  "compass": "KUM-pus",
-  "flashlight": "FLASH-lyt",
-  "umbrella": "um-BREL-uh",
-  "suitcase": "SOOT-kays",
-  "tent": "tent",
-  "sleeping bag": "SLEE-ping bag",
-  "binoculars": "bi-NOK-yoo-lurz",
-  "telescope": "TEL-uh-skohp",
+  swimsuit: "SWIM-soot",
+  underwear: "UN-der-wair",
+  socks: "soks",
+  shoes: "shooz",
+  watch: "wotch",
+  ring: "ringg",
+  necklace: "NEK-lis",
+  earrings: "EER-ringz",
+  bracelet: "BRAY-slet",
+  laptop: "LAP-tahp",
+  television: "TEL-uh-vizh-un",
+  radio: "RAY-dee-oh",
+  newspaper: "NOOZ-pay-per",
+  map: "mahp",
+  flashlight: "FLASH-lyt",
+  suitcase: "SOOT-kays",
+  tent: "tehnt",
+  "sleeping bag": "SLEEP-ing bahg",
+  binoculars: "bi-NOK-yoo-lurz",
+  telescope: "TEL-uh-skohp",
+  bee: "beeh",
+  fly: "flyh",
+  ant: "anth",
+  bug: "bugh",
+  hen: "henh",
+  eel: "eelh",
+  ram: "ramh",
+  yak: "yakh",
 };
+
+function validateLatinPronunciationOverrides() {
+  const errors = [];
+  for (const [key, value] of Object.entries(latinPronunciationOverrides)) {
+    if (isLatinPhoneticDuplicate(key, value)) {
+      errors.push(`${key} -> ${value}`);
+    }
+  }
+  if (errors.length) {
+    throw new Error(`Latin pronunciation override validation failed:\n${errors.join("\n")}`);
+  }
+}
 
 /* Japanese pronunciation overrides
    Used when the automatic kana-based guide cannot handle kanji compounds
@@ -10707,24 +10709,37 @@ const kanaPronunciationMap = {
   ぁ: "a", ぃ: "i", ぅ: "u", ぇ: "e", ぉ: "o", ゃ: "ya", ゅ: "yu", ょ: "yo", っ: "",
 };
 
+function latinPhoneticAntiDuplicate(word) {
+  const normalized = word.toLowerCase().replace(/\s+/g, " ").trim();
+  return normalized
+    .split(" ")
+    .map((part) => (part.length <= 4 ? `${part}h` : part.replace(/([aeiouy])([^aeiouy]*)$/i, "$1h$2")))
+    .join(" ");
+}
+
 function latinPronunciationGuide(word) {
   /* Consistent readable style for English and Dutch:
      Never return the raw word. Always produce a hyphenated, stressed-looking guide when possible. */
   const normalized = word.toLowerCase().replace(/\s+/g, " ").trim();
-  if (latinPronunciationOverrides[normalized]) return latinPronunciationOverrides[normalized];
+  if (latinPronunciationOverrides[normalized]) {
+    const override = latinPronunciationOverrides[normalized];
+    if (!isLatinPhoneticDuplicate(word, override)) return override;
+  }
 
-  // Produce a more readable hyphenated version
   let guide = normalized
     .replace(/([aeiouy]+)([bcdfghjklmnpqrstvwxyz]+)/gi, "$1-$2")
     .replace(/-+/g, "-")
     .replace(/^-|-$/g, "");
 
-  if (!guide || guide === normalized) {
-    // Fallback: simple stress hint on first vowel group
+  if (!guide || guide === normalized || isLatinPhoneticDuplicate(word, guide)) {
     guide = normalized.replace(/^([bcdfghjklmnpqrstvwxyz]*[aeiouy]+)(.*)$/i, (m, first, rest) => first.toUpperCase() + rest);
   }
 
-  return guide || normalized;
+  if (isLatinPhoneticDuplicate(word, guide)) {
+    guide = latinPhoneticAntiDuplicate(word);
+  }
+
+  return guide || latinPhoneticAntiDuplicate(word);
 }
 
 function russianPronunciationGuide(word) {
@@ -11167,6 +11182,7 @@ function symbolArt(key) {
 function initApp() {
   assertDomElements();
   validateEmojiArraySchemas();
+  validateLatinPronunciationOverrides();
   renderLanguages();
   renderQuickWords();
   loadVoices();

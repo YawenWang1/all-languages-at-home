@@ -4,7 +4,8 @@
   "description": "GitHub Pages can host the app as a static website. The shared web version supports:",
   "main": "app.js",
   "scripts": {
-    "smoke-test": "node smoke-test.mjs"
+    "smoke-test": "node smoke-test.mjs",
+    "audit:latin": "node audit-latin-dupes.js"
   },
   "repository": {
     "type": "git",
